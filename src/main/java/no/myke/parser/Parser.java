@@ -13,6 +13,7 @@ public class Parser {
     private Model model;
     private TypeReader reader;
     private Logger logger;
+    private ModelObject currentObject;
 
     public Parser(TypeReader reader) {
         this.reader = reader;
@@ -33,16 +34,13 @@ public class Parser {
     private int readChunk() throws IOException {
         short type = reader.getShort();
         int size = reader.getInt(); // this is probabley unsigned but for convenience we use signed int
-        log("Chunk 0x%04x (%d)\n", type, size);
+        log("Chunk 0x%04x (%d)", type, size);
         parseChunk(type, size);
         return size;
     }
 
     private void parseChunk(short type, int size) throws IOException {
         switch (type) {
-        case 0x4d4d:
-            parseMainChunk();
-            break;
         case 0x0002:
             parseVersionChunk();
             break;
@@ -59,11 +57,24 @@ public class Parser {
         case 0x4120:
             parseFacesDescription();
             break;
+        case 0x4140:
+            parseMappingCoordinates();
+            break;
         case 0x4160:
             parseLocalCoordinateSystem();
             break;
-        case 0x4140:
-            parseMappingCoordinates();
+        case 0x4d4d:
+            parseMainChunk();
+            break;
+        case (short)0xafff: // Material block
+            break;
+        case (short)0xa000: // Material name
+            parseMaterialName();
+            break;
+        case (short)0xa200: // Texture map 1
+            break;
+        case (short)0xa300: // Mapping filename
+            parseMappingFilename();
             break;
         default:
             skipChunk(size);
@@ -84,12 +95,13 @@ public class Parser {
 
     private void parseVersionChunk() throws IOException {
         int version = reader.getInt();
-        log("3ds version %d \n", version);
+        log("3ds version %d", version);
     }
 
     private void parseObjectChunk() throws IOException {
         String name = reader.readString();
-        log("Found Object %s\n", name);
+        log("Found Object %s", name);
+        currentObject = model.newModelObject(name);
     }
 
     private void parseVerticesList() throws IOException {
@@ -98,8 +110,9 @@ public class Parser {
         for (int i=0; i<vertices.length; i++) {
             vertices[i] = reader.getFloat();
         }
-        model.vertices = vertices;
-        log("Found %d vertices\n", numVertices);
+
+        currentObject.vertices = vertices;
+        log("Found %d vertices", numVertices);
     }
 
     private void parseFacesDescription() throws IOException {
@@ -111,8 +124,8 @@ public class Parser {
             faces[i*3 + 2] = reader.getShort();
             reader.getShort(); // Discard face flag
         }
-        log("Found %d faces\n", numFaces);
-        model.polygons = faces;
+        log("Found %d faces", numFaces);
+        currentObject.polygons = faces;
     }
 
     private void parseLocalCoordinateSystem() throws IOException {
@@ -133,8 +146,18 @@ public class Parser {
             uv[i*2] = reader.getFloat();
             uv[i*2+1] = reader.getFloat();
         }
-        model.textureCoordinates = uv;
-        log("Found %d mapping coordinates\n", numVertices);
+        currentObject.textureCoordinates = uv;
+        log("Found %d mapping coordinates", numVertices);
+    }
+
+    private void parseMaterialName() throws IOException {
+        String materialName = reader.readString();
+        log("Material name %s", materialName);
+    }
+
+    private void parseMappingFilename() throws IOException {
+        String mappingFile = reader.readString();
+        log("Mapping file %s", mappingFile);
     }
 
     private void readVector(float[] v) throws IOException {

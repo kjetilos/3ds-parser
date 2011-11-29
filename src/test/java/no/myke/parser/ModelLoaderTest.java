@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class ModelLoaderTest {
 
-    private File file = new File("src/test/resources/rocket.3ds");
+    private File file = new File("src/test/resources/frigate.3ds");
     
     @Test
     public void testLoadRocket() throws Exception {
