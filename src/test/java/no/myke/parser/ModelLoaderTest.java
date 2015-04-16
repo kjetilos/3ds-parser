@@ -11,7 +11,7 @@ public class ModelLoaderTest {
     private File file = new File("src/test/resources/frigate.3ds");
     
     @Test
-    public void testLoadRocket() throws Exception {
+    public void testLoad() throws Exception {
         Model model = ModelLoader.load3dModel(file);
         assertNotNull(model);
     }

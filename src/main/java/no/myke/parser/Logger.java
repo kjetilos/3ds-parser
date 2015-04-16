@@ -3,7 +3,7 @@ package no.myke.parser;
 /**
  * Logger interface to connect your own logger to the Parser
  *
- * @author Kjetil Ã˜sterÃ¥s
+ * @author Kjetil Østerås
  */
 public interface Logger {
 

@@ -4,7 +4,7 @@ package no.myke.parser;
  * Any errors from the parser is wrapped in a ParserException for
  * easy error handling.
  *
- * @author Kjetil Ã˜sterÃ¥s
+ * @author Kjetil Østerås
  */
 public class ParserException extends Exception {
 

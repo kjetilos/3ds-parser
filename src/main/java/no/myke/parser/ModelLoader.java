@@ -10,7 +10,7 @@ import java.nio.channels.FileChannel;
 /**
  * Facade for loading a 3ds model in different ways.
  *
- * @author Kjetil Ã˜sterÃ¥s
+ * @author Kjetil Østerås
  */
 public class ModelLoader {
     public static Model load3dModel(File file) throws ParserException {

@@ -12,7 +12,7 @@ import org.junit.Test;
  */
 public class ComplexModelTest implements Logger {
 
-    private File file = new File("src/test/resources/frigate.3ds");
+    private File file = new File("src/test/resources/fighter.3ds");
 
     @Test
     public void testComplexModel() throws Exception {
@@ -21,8 +21,9 @@ public class ComplexModelTest implements Logger {
         Parser parser = new Parser(reader);
         parser.setLogger(this);
         Model model = parser.parseFile();
-//        debugModel(model);
+        debugModel(model);
         assertNotNull(model);
+        fis.close();
     }
 
     private void debugModel(Model model) {

@@ -6,7 +6,7 @@ import java.io.IOException;
  * This parser understands the layout of the 3ds file and is
  * able to construct a Model from a reader.
  *
- * @author Kjetil Ã˜sterÃ¥s
+ * @author Kjetil Østerås
  */
 public class Parser {
 
@@ -33,7 +33,7 @@ public class Parser {
 
     private int readChunk() throws IOException {
         short type = reader.getShort();
-        int size = reader.getInt(); // this is probabley unsigned but for convenience we use signed int
+        int size = reader.getInt(); // this is probably unsigned but for convenience we use signed int
         log("Chunk 0x%04x (%d)", type, size);
         parseChunk(type, size);
         return size;
@@ -77,11 +77,12 @@ public class Parser {
             parseMappingFilename();
             break;
         default:
-            skipChunk(size);
+            skipChunk(type, size);
         }
     }
 
-    private void skipChunk(int size) throws IOException {
+    private void skipChunk(int type, int size) throws IOException {
+        log("skipping chunk");
         move(size - 6); // size includes headers. header is 6 bytes
     }
 

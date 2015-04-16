@@ -29,8 +29,8 @@ import com.jogamp.opengl.util.texture.TextureIO;
  */
 public class RenderModel implements GLEventListener {
 
-	private File modelFile = new File("src/test/resources/EnemyFighter.3ds");
-	private File textureFile = new File("src/test/resources/EnemyFighter.bmp");
+	private static File modelFile = new File("src/test/resources/fighter.3ds");
+	private static File textureFile = new File("src/test/resources/fighter.png");
 
 	private float rotateX = 0.0f;
 	private float rotateY = 0.0f;
@@ -42,6 +42,12 @@ public class RenderModel implements GLEventListener {
 	private int prevMouseY;
 
 	public static void main(String[] args) {
+		if (args.length == 2) {
+			modelFile = new File(args[0]);
+			textureFile = new File(args[1]);
+		}
+		System.out.println("Using model " + modelFile + " and texture " + textureFile);
+		
 		java.awt.Frame frame = new java.awt.Frame("Render Model");
 		frame.setSize(300, 300);
 		frame.setLayout(new java.awt.BorderLayout());
@@ -75,9 +81,6 @@ public class RenderModel implements GLEventListener {
 		this.swapInterval = 1;
 	}
 
-	public void setGears(int g1) {
-		modelList = g1;
-	}
 
 	public void init(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
@@ -104,8 +107,8 @@ public class RenderModel implements GLEventListener {
 
 		gl.glEnable(GL2.GL_NORMALIZE);
 
-		MouseListener modelMouse = new GearsMouseAdapter();
-		KeyListener modelKeys = new GearsKeyAdapter();
+		MouseListener modelMouse = new ModelMouseAdapter();
+		KeyListener modelKeys = new ModelKeyAdapter();
 
 		if (drawable instanceof Window) {
 			Window window = (Window) drawable;
@@ -124,23 +127,20 @@ public class RenderModel implements GLEventListener {
 		GLU glu = GLU.createGLU(gl);
 		gl.setSwapInterval(swapInterval);
 
-		float h = (float) height / (float) width;
 		float aspect = (float) width / height;
 
 		gl.glMatrixMode(GL2.GL_PROJECTION);
-
 		gl.glLoadIdentity();
 		glu.gluPerspective(45.0f, aspect, 0.1f, 200.0f);
 	    glu.gluLookAt(0.0, 0.0, 5.0, 0.0,0.0,0.0, 0.0,1.0,0.0);
-//		gl.glFrustum(-1.0f, 1.0f, -h, h, 5.0f, 60.0f);
+
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		gl.glTranslatef(0.0f, 0.0f, -40.0f);
 	}
 
 	public void dispose(GLAutoDrawable drawable) {
-		System.err.println("Gears: Dispose");
-		setGears(0);
+		modelList = 0;
 	}
 
 	public void display(GLAutoDrawable drawable) {
@@ -148,7 +148,6 @@ public class RenderModel implements GLEventListener {
 
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-
 
 		// Place the model and call its display list
 		gl.glPushMatrix();
@@ -167,7 +166,9 @@ public class RenderModel implements GLEventListener {
 
 		Model model = loadModel();
 		Texture texture = loadTexture();
-		texture.setTexParameterf(gl, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR);
+	    texture.setTexParameterf(gl, GL2.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP); // If the u,v coordinates overflow the range 0,1 the image is repeated
+	    texture.setTexParameterf(gl, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
+	    texture.setTexParameterf(gl, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR);
 		texture.setTexParameterf(gl, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);    	   
 
 		gl.glEnable(GL2.GL_TEXTURE_2D);
@@ -186,7 +187,6 @@ public class RenderModel implements GLEventListener {
 				int at = p[i + 0] * 2;
 				int bt = p[i + 1] * 2;
 				int ct = p[i + 2] * 2;
-
 				gl.glBegin(GL2.GL_POLYGON);
 				gl.glTexCoord2f(t[at], t[at + 1]);
 				gl.glVertex3f(v[a + 0], v[a + 1], v[a + 2]);
@@ -227,7 +227,7 @@ public class RenderModel implements GLEventListener {
 		}		
 	}
 
-	class GearsKeyAdapter extends KeyAdapter {
+	class ModelKeyAdapter extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			int kc = e.getKeyCode();
@@ -243,7 +243,7 @@ public class RenderModel implements GLEventListener {
 		}
 	}
 
-	class GearsMouseAdapter extends MouseAdapter {
+	class ModelMouseAdapter extends MouseAdapter {
 		@Override
 		public void mousePressed(MouseEvent e) {
 			prevMouseX = e.getX();

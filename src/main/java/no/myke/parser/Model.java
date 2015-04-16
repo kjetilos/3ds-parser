@@ -5,7 +5,7 @@ import java.util.LinkedList;
 /**
  * Representation of the 3d model loaded from the 3ds file
  *
- * @author Kjetil Ã˜sterÃ¥s
+ * @author Kjetil Østerås
  */
 public class Model {
 
