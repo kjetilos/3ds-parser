@@ -177,23 +177,23 @@ public class RenderModel implements GLEventListener {
 
 		for (ModelObject modelObject : model.objects) {
 			short[] p = modelObject.polygons;
-			float[] v = modelObject.vertices;
+			Vector[] v = modelObject.vectors;
 			float[] t = modelObject.textureCoordinates;
 
 			for (int i = 0; i < p.length; i += 3) {
-				int a = p[i + 0] * 3;
-				int b = p[i + 1] * 3;
-				int c = p[i + 2] * 3;
+				int a = p[i + 0];
+				int b = p[i + 1];
+				int c = p[i + 2];
 				int at = p[i + 0] * 2;
 				int bt = p[i + 1] * 2;
 				int ct = p[i + 2] * 2;
 				gl.glBegin(GL2.GL_POLYGON);
 				gl.glTexCoord2f(t[at], t[at + 1]);
-				gl.glVertex3f(v[a + 0], v[a + 1], v[a + 2]);
+				gl.glVertex3f(v[a].X(), v[a].Y(), v[a].Z());
 				gl.glTexCoord2f(t[bt], t[bt + 1]);
-				gl.glVertex3f(v[b + 0], v[b + 1], v[b + 2]);
+				gl.glVertex3f(v[b].X(), v[b].Y(), v[b].Z());
 				gl.glTexCoord2f(t[ct], t[ct + 1]);
-				gl.glVertex3f(v[c + 0], v[c + 1], v[c + 2]);
+				gl.glVertex3f(v[c].X(), v[c].Y(), v[c].Z());
 				gl.glEnd();
 			}
 		}
