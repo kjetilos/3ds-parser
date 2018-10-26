@@ -28,8 +28,8 @@ public class ComplexModelTest implements Logger {
 
     private void debugModel(Model model) {
         for (ModelObject object : model.objects) {
-            if (object.vertices != null)
-                maxMin(object.vertices);
+            if (object.vectors != null)
+                maxMin(object.vectors);
         }
 
         System.out.println();
@@ -47,7 +47,7 @@ public class ComplexModelTest implements Logger {
     float g_z_min = Float.MAX_VALUE;
 
 
-    private void maxMin(float[] v) {
+    private void maxMin(Vector[] v) {
         float x_max = Float.MIN_VALUE;
         float x_min = Float.MAX_VALUE;
         float y_max = Float.MIN_VALUE;
@@ -55,10 +55,10 @@ public class ComplexModelTest implements Logger {
         float z_max = Float.MIN_VALUE;
         float z_min = Float.MAX_VALUE;
 
-        for (int i=0; i*3 < v.length; i+=3) {
-            float x = v[i*3 + 0];
-            float y = v[i*3 + 1];
-            float z = v[i*3 + 2];
+        for (int i=0; i < v.length; i++) {
+            float x = v.X();
+            float y = v.Y();
+            float z = v.Z();
             x_max = Math.max(x_max, x);
             x_min = Math.min(x_min, x);
             y_max = Math.max(y_max, y);
