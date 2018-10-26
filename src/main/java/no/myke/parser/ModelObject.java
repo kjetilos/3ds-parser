@@ -4,7 +4,6 @@ package no.myke.parser;
  *
  */
 public class ModelObject {
-    private String name;
     private final String name;
     public Vector[] vectors;
     public short[] polygons;
